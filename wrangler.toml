@@ -1,0 +1,15 @@
+name = "openai-mcp-agent-proxy"
+main = "src/index.js"
+compatibility_date = "2024-03-20"
+
+[vars]
+# OPENAI_API_KEY and AGENT_ID should be set via `wrangler secret put`
+# OPENAI_API_KEY = ""
+# AGENT_ID = ""
+
+# Database binding for Meus Prompts product
+# Run `npx wrangler d1 create meus-prompts-db` to create the DB and get the ID
+[[d1_databases]]
+binding = "DB"
+database_name = "meus-prompts-db"
+database_id = "PLACEHOLDER_DB_ID" # User must replace this with actual ID

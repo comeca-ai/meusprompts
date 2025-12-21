@@ -1,0 +1,25 @@
+{
+  "name": "Meus Prompts AI",
+  "description": "Gerenciador inteligente de prompts. Salve, organize e otimize seus prompts com IA.",
+  "logo": "logo.png",
+  "legal_info_url": "https://meusprompts.ia.br/legal",
+  "privacy_policy_url": "https://meusprompts.ia.br/privacy",
+  "tools": [
+    {
+      "name": "save_prompt",
+      "description": "Save a new prompt to the library."
+    },
+    {
+      "name": "list_prompts",
+      "description": "Retrieve saved prompts."
+    },
+    {
+      "name": "get_prompt",
+      "description": "Get details of a specific prompt."
+    },
+    {
+      "name": "optimize_prompt",
+      "description": "Use AI to improve a prompt."
+    }
+  ]
+}

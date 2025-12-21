@@ -1,0 +1,137 @@
+openapi: 3.1.0
+info:
+  title: Meus Prompts API
+  description: API for managing and optimizing prompts (Meus Prompts Product).
+  version: 1.0.0
+servers:
+  - url: https://your-worker-url.workers.dev
+paths:
+  /prompts:
+    get:
+      operationId: listPrompts
+      summary: List saved prompts
+      parameters:
+        - name: tag
+          in: query
+          schema:
+            type: string
+          description: Filter by tag
+      responses:
+        '200':
+          description: A list of prompts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prompts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Prompt'
+    post:
+      operationId: savePrompt
+      summary: Save a new prompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - title
+                - body
+      responses:
+        '200':
+          description: Prompt saved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
+  /prompts/{id}:
+    get:
+      operationId: getPrompt
+      summary: Get a specific prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Prompt details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
+    delete:
+      operationId: deletePrompt
+      summary: Delete a prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Prompt deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+  /optimize:
+    post:
+      operationId: optimizePrompt
+      summary: Optimize a prompt using AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt_text:
+                  type: string
+                goal:
+                  type: string
+      responses:
+        '200':
+          description: Optimization result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  output:
+                    type: string
+
+components:
+  schemas:
+    Prompt:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string

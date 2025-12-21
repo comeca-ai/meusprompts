@@ -1,0 +1,13 @@
+{
+  "name": "openai-mcp-agent-proxy",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker serving as an MCP proxy to OpenAI Agents API",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "./run_tests.sh",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
