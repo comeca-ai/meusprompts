@@ -14,10 +14,10 @@ export default function OfferSection() {
     <section id="oferta" className="scroll-mt-20">
       <div className="mx-auto max-w-6xl px-4 pb-16 md:px-6 md:pb-24">
         <Reveal>
-          <div className="rounded-3xl bg-[#0A3945] px-6 py-12 text-primary-foreground md:px-14 md:py-16">
+          <div className="rounded-3xl bg-[#0b1020] px-6 py-12 text-white md:px-14 md:py-16">
             <div className="grid items-center gap-10 md:grid-cols-[1.2fr_1fr]">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-[hsl(var(--coral))]">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#8fb2ff]">
                   Próximo passo
                 </span>
                 <h2 className="mt-3 font-display text-3xl font-semibold leading-tight md:text-4xl">

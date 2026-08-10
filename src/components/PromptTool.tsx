@@ -310,7 +310,7 @@ export default function PromptTool() {
                     href={whatsappLink(sector.label)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[hsl(var(--coral))] px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-[hsl(var(--coral-deep))]"
+                    className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:bg-[#eaf0ff]"
                   >
                     <MessageCircle className="h-5 w-5" />
                     Quero saber no WhatsApp
