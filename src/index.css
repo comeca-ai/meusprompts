@@ -4,39 +4,39 @@
 
 @layer base {
   :root {
-    /* Fundo off-white quente + texto petróleo-tinta */
-    --background: 36 50% 96%;
-    --foreground: 202 28% 18%;
+    /* Identidade comeca.ai — fundo branco + texto tinta #0b1020 */
+    --background: 0 0% 100%;
+    --foreground: 226 49% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 202 28% 18%;
+    --card-foreground: 226 49% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 202 28% 18%;
-    /* Azul-petróleo profundo (#0E4B5A) como primária */
-    --primary: 192 73% 20%;
-    --primary-foreground: 36 50% 97%;
-    /* Coral suave (#FF6B57) — reservado a CTAs via classes utilitárias */
-    --coral: 7 100% 67%;
-    --coral-deep: 7 76% 57%;
-    --secondary: 185 27% 91%;
-    --secondary-foreground: 192 75% 15%;
-    --muted: 185 27% 91%;
-    --muted-foreground: 199 11% 40%;
-    --accent: 185 27% 91%;
-    --accent-foreground: 192 75% 15%;
+    --popover-foreground: 226 49% 8%;
+    /* Azul comeca.ai (#3e7aef) como primária */
+    --primary: 220 85% 59%;
+    --primary-foreground: 0 0% 100%;
+    /* CTAs no mesmo azul da marca (como no comeca.ai) — hover mais profundo */
+    --coral: 220 85% 59%;
+    --coral-deep: 221 70% 46%;
+    --secondary: 222 100% 96%;
+    --secondary-foreground: 221 70% 35%;
+    --muted: 220 40% 97%;
+    --muted-foreground: 226 14% 42%;
+    --accent: 222 100% 96%;
+    --accent-foreground: 221 70% 35%;
     --destructive: 0 62% 45%;
-    --destructive-foreground: 36 50% 97%;
-    --border: 35 26% 87%;
-    --input: 35 26% 84%;
-    --ring: 7 100% 67%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 24% 91%;
+    --input: 220 24% 87%;
+    --ring: 220 85% 59%;
     --radius: 0.875rem;
-    --sidebar-background: 36 50% 96%;
-    --sidebar-foreground: 202 28% 18%;
-    --sidebar-primary: 192 73% 20%;
-    --sidebar-primary-foreground: 36 50% 97%;
-    --sidebar-accent: 185 27% 91%;
-    --sidebar-accent-foreground: 192 75% 15%;
-    --sidebar-border: 35 26% 87%;
-    --sidebar-ring: 7 100% 67%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 226 49% 8%;
+    --sidebar-primary: 220 85% 59%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 100% 96%;
+    --sidebar-accent-foreground: 221 70% 35%;
+    --sidebar-border: 220 24% 91%;
+    --sidebar-ring: 220 85% 59%;
   }
 }
 
@@ -79,13 +79,13 @@
 
   .shadow-warm {
     box-shadow:
-      0 1px 2px rgb(14 75 90 / 0.05),
-      0 8px 24px rgb(14 75 90 / 0.07);
+      0 1px 2px rgb(62 122 239 / 0.08),
+      0 8px 24px rgb(62 122 239 / 0.1);
   }
   .shadow-warm-lg {
     box-shadow:
-      0 2px 4px rgb(14 75 90 / 0.06),
-      0 20px 48px rgb(14 75 90 / 0.12);
+      0 2px 4px rgb(62 122 239 / 0.08),
+      0 20px 48px rgb(62 122 239 / 0.14);
   }
 }
 

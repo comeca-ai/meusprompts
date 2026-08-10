@@ -1,26 +1,33 @@
 import { Link } from 'react-router'
-import { Wand2 } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0A3945] text-primary-foreground">
+    <footer className="bg-[#0b1020] text-white">
       <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
-                <Wand2 className="h-4 w-4" />
+              <span className="font-display text-xl font-bold tracking-tight text-[#8fb2ff]">
+                c∞meca.ai
               </span>
-              <span className="font-display text-lg font-semibold">
-                Melhore Meu Prompt
-                <span className="text-[hsl(var(--coral))]"> · por Setor</span>
+              <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white/80">
+                Melhore Meu Prompt · por Setor
               </span>
             </div>
-            <p className="mt-3 max-w-sm text-sm text-primary-foreground/70">
-              Feito para pequenos empresários brasileiros usarem IA de verdade.
+            <p className="mt-3 max-w-sm text-sm text-white/70">
+              Uma ferramenta gratuita do ecossistema comeca.ai — IA de verdade
+              para o empresário paraibano.
             </p>
+            <a
+              href="https://comeca.ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[#8fb2ff] underline-offset-4 hover:underline"
+            >
+              Conhecer a imersão Começa Ai para Donos →
+            </a>
           </div>
-          <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-primary-foreground/80">
+          <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/80">
             <a href="#ferramenta" className="hover:text-white">
               Ferramenta
             </a>
@@ -35,12 +42,20 @@ export default function Footer() {
             </Link>
           </nav>
         </div>
-        <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 text-xs text-primary-foreground/50 md:flex-row md:items-center">
+        <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row md:items-center">
           <span>
             © {new Date().getFullYear()} Melhore Meu Prompt — por Setor
           </span>
           <span>
-            um projeto <span className="font-semibold">comeca.ai</span>
+            um projeto{' '}
+            <a
+              href="https://comeca.ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-white/70 hover:text-white"
+            >
+              comeca.ai
+            </a>
           </span>
         </div>
       </div>

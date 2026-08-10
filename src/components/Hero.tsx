@@ -15,7 +15,7 @@ export default function Hero() {
           <Reveal delay={0}>
             <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
               <Sparkles className="h-3.5 w-3.5" />
-              Ferramenta gratuita · 6 setores
+              Ferramenta gratuita comeca.ai · 6 setores
             </span>
           </Reveal>
 

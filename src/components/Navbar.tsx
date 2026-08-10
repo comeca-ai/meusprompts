@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { Menu, MessageCircle, Wand2, X } from 'lucide-react'
+import { Menu, MessageCircle, X } from 'lucide-react'
 import { whatsappLink } from '@/lib/whatsapp'
 
 const NAV_LINKS = [
@@ -17,14 +17,11 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 animate-fade-down border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
         <Link to="/" className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Wand2 className="h-5 w-5" />
+          <span className="font-display text-xl font-bold tracking-tight text-primary">
+            c∞meca.ai
           </span>
-          <span className="font-display text-lg font-semibold leading-tight text-primary">
-            Melhore Meu Prompt
-            <span className="block text-xs font-medium tracking-wide text-[hsl(var(--coral-deep))]">
-              por Setor
-            </span>
+          <span className="hidden rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold leading-tight text-secondary-foreground sm:block">
+            Melhore Meu Prompt · por Setor
           </span>
         </Link>
 
