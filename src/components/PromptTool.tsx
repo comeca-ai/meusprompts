@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import {
   AlertCircle,
   Bot,
@@ -13,7 +14,6 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Dialog,
@@ -27,13 +27,15 @@ import { SECTORS, DEFAULT_SECTOR, getSector } from '@/lib/sectors'
 import { improvePrompt, isDemoMode } from '@/lib/improvePrompt'
 import type { ImproveResult } from '@/lib/improvePrompt'
 import {
-  canUseFree,
-  getLead,
+  getUsageCount,
   incrementUsage,
-  saveLead,
+  saveMySectorServer,
   trackEvent,
+  trackServerEvent,
 } from '@/lib/tracker'
-import { whatsappLink } from '@/lib/whatsapp'
+import { whatsappLink, trackWhatsappClick } from '@/lib/whatsapp'
+import { useAuth } from '@/hooks/useAuth'
+import { LOGIN_PATH } from '@/const'
 
 const MIN_CHARS = 10
 
@@ -45,14 +47,14 @@ export default function PromptTool() {
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [gateOpen, setGateOpen] = useState(false)
-  const [leadName, setLeadName] = useState('')
-  const [leadEmail, setLeadEmail] = useState('')
-  const [gateError, setGateError] = useState<string | null>(null)
-  const [leadSaved, setLeadSaved] = useState(getLead() !== null)
 
+  const { isAuthenticated } = useAuth()
   const demo = isDemoMode()
   const sector = getSector(sectorId)
   const promptValid = prompt.trim().length >= MIN_CHARS
+
+  // Gate no 2º uso: contador local decide QUANDO mostrar; autenticação decide SE mostra.
+  const gated = getUsageCount() >= 1 && !isAuthenticated
 
   async function runImprove() {
     setLoading(true)
@@ -62,6 +64,10 @@ export default function PromptTool() {
       const res = await improvePrompt(prompt, sectorId)
       incrementUsage()
       trackEvent({ type: 'use', sector: sectorId })
+      if (isAuthenticated) {
+        // OAuth já capturou nome+email; registra o setor de interesse.
+        saveMySectorServer(sectorId)
+      }
       setResult(res)
     } catch (err) {
       setError(
@@ -76,30 +82,11 @@ export default function PromptTool() {
 
   function handleSubmit() {
     if (!promptValid || loading) return
-    if (!canUseFree()) {
-      setGateError(null)
+    if (gated) {
+      trackServerEvent('gate_login', sectorId)
       setGateOpen(true)
       return
     }
-    void runImprove()
-  }
-
-  function handleGateSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    const name = leadName.trim()
-    const email = leadEmail.trim()
-    if (name.length < 2) {
-      setGateError('Conta pra gente seu nome (pelo menos 2 letras).')
-      return
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setGateError('Esse email não parece válido. Confere aí?')
-      return
-    }
-    saveLead({ name, email })
-    trackEvent({ type: 'lead', sector: sectorId, name, email })
-    setLeadSaved(true)
-    setGateOpen(false)
     void runImprove()
   }
 
@@ -225,7 +212,7 @@ export default function PromptTool() {
               )}
             </Button>
             <p className="mt-3 text-center text-xs text-muted-foreground">
-              {leadSaved || canUseFree()
+              {!gated
                 ? 'Sem cadastro no 1º uso. Seus prompts não ficam salvos.'
                 : ''}
             </p>
@@ -310,6 +297,7 @@ export default function PromptTool() {
                     href={whatsappLink(sector.label)}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsappClick(sectorId)}
                     className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:bg-[#eaf0ff]"
                   >
                     <MessageCircle className="h-5 w-5" />
@@ -322,7 +310,7 @@ export default function PromptTool() {
         </Reveal>
       </div>
 
-      {/* Email gate — a partir do 2º uso */}
+      {/* Gate de login — a partir do 2º uso, exige conta */}
       <Dialog open={gateOpen} onOpenChange={setGateOpen}>
         <DialogContent
           className="sm:max-w-md"
@@ -330,48 +318,19 @@ export default function PromptTool() {
         >
           <DialogHeader>
             <DialogTitle className="font-display text-2xl text-primary">
-              Desbloqueie usos ilimitados
+              Entre para continuar
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Deixe seu nome e email para continuar usando grátis — e receba o
-              guia de prompts do setor {sector.label}.
+              Entre com a sua conta para continuar melhorando prompts — é
+              grátis. Sem formulários: usamos só seu nome e email do login.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleGateSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="gate-name">Seu nome</Label>
-              <Input
-                id="gate-name"
-                value={leadName}
-                onChange={(e) => setLeadName(e.target.value)}
-                placeholder="Como podemos te chamar?"
-                autoComplete="name"
-                className="mt-1.5"
-              />
-            </div>
-            <div>
-              <Label htmlFor="gate-email">Seu melhor email</Label>
-              <Input
-                id="gate-email"
-                type="email"
-                value={leadEmail}
-                onChange={(e) => setLeadEmail(e.target.value)}
-                placeholder="voce@suaempresa.com.br"
-                autoComplete="email"
-                className="mt-1.5"
-              />
-            </div>
-            {gateError && (
-              <p className="flex items-center gap-2 text-sm text-red-700">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                {gateError}
-              </p>
-            )}
+          <div className="space-y-4">
             <Button
-              type="submit"
+              asChild
               className="w-full rounded-full bg-[hsl(var(--coral))] py-5 font-semibold text-white hover:bg-[hsl(var(--coral-deep))]"
             >
-              Liberar acesso grátis
+              <Link to={LOGIN_PATH}>Entrar com a minha conta</Link>
             </Button>
             <button
               type="button"
@@ -381,9 +340,9 @@ export default function PromptTool() {
               Agora não
             </button>
             <p className="text-center text-xs text-muted-foreground">
-              Sem spam. Seus dados ficam com a gente, só para te enviar o guia.
+              Login rápido e seguro. Seus prompts não ficam salvos.
             </p>
-          </form>
+          </div>
         </DialogContent>
       </Dialog>
     </section>

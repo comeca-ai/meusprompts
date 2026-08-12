@@ -1,4 +1,43 @@
-/** Sensor de demanda + captura de leads — tudo em localStorage, com webhook opcional. */
+/** Sensor de demanda + captura de leads — localStorage + servidor (tRPC), com webhook opcional. */
+
+import { createTRPCClient, httpBatchLink } from '@trpc/client'
+import superjson from 'superjson'
+import type { AppRouter } from '../../api/router'
+
+/** Cliente tRPC "vanilla" (fora de React) para eventos fire-and-forget. */
+const serverClient = createTRPCClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: '/api/trpc',
+      transformer: superjson,
+      fetch(input, init) {
+        return globalThis.fetch(input, {
+          ...(init ?? {}),
+          credentials: 'include',
+        })
+      },
+    }),
+  ],
+})
+
+export type ServerEventType = 'use' | 'gate_login' | 'cta_whatsapp'
+
+/**
+ * Dispara leads.logEvent no servidor. Fire-and-forget: falha nunca quebra o
+ * fluxo da UI e nada aqui deve ser awaitado de forma bloqueante.
+ */
+export function trackServerEvent(type: ServerEventType, sector?: string): void {
+  serverClient.leads.logEvent.mutate({ type, sector }).catch(() => {
+    /* silencioso de propósito */
+  })
+}
+
+/** Salva o setor de interesse do usuário autenticado (fire-and-forget). */
+export function saveMySectorServer(sector: string): void {
+  serverClient.leads.saveMySector.mutate({ sector }).catch(() => {
+    /* silencioso de propósito */
+  })
+}
 
 export interface DemandEvent {
   type: 'use' | 'lead'
@@ -75,6 +114,10 @@ export function trackEvent(event: Omit<DemandEvent, 'ts'>): void {
     /* localStorage cheio/indisponível: não bloqueia */
   }
   postWebhook(full)
+  // Espelha o uso no servidor (sensor server-side), sem bloquear a UI.
+  if (full.type === 'use') {
+    trackServerEvent('use', full.sector)
+  }
 }
 
 export function clearEvents(): void {

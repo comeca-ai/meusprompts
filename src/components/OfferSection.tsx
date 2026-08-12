@@ -1,6 +1,6 @@
 import { Check, MessageCircle } from 'lucide-react'
 import Reveal from '@/components/Reveal'
-import { whatsappLink } from '@/lib/whatsapp'
+import { whatsappLink, trackWhatsappClick } from '@/lib/whatsapp'
 
 const BENEFITS = [
   '50+ prompts profissionais do seu setor, prontos para copiar',
@@ -50,6 +50,7 @@ export default function OfferSection() {
                   href={whatsappLink()}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackWhatsappClick()}
                   className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[hsl(var(--coral))] px-6 py-3.5 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-[hsl(var(--coral-deep))]"
                 >
                   <MessageCircle className="h-5 w-5" />

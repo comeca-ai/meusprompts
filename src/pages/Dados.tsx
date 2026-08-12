@@ -1,60 +1,101 @@
-import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import {
   ArrowLeft,
   Download,
+  Loader2,
+  LogIn,
   Mail,
   MousePointerClick,
-  Trash2,
   TrendingUp,
+  Users,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SECTORS, getSector } from '@/lib/sectors'
-import {
-  clearEvents,
-  exportEventsJson,
-  getEvents,
-  getLead,
-  getUsageCount,
-  summarizeBySector,
-} from '@/lib/tracker'
+import { trpc } from '@/providers/trpc'
+import { useAuth } from '@/hooks/useAuth'
+import { LOGIN_PATH } from '@/const'
+
+const EVENT_LABEL: Record<string, string> = {
+  use: 'uso',
+  gate_login: 'login no gate',
+  cta_whatsapp: 'WhatsApp',
+}
 
 export default function Dados() {
-  const [version, setVersion] = useState(0)
+  const { isAuthenticated, isLoading: authLoading } = useAuth()
+  const statsQuery = trpc.leads.stats.useQuery(undefined, {
+    enabled: isAuthenticated,
+    retry: false,
+  })
 
-  const events = useMemo(() => getEvents(), [version])
-  const summary = useMemo(() => summarizeBySector(), [version])
-  const usageCount = useMemo(() => getUsageCount(), [version])
-  const lead = useMemo(() => getLead(), [version])
+  if (authLoading) {
+    return (
+      <div className="flex min-h-[100dvh] items-center justify-center bg-background">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    )
+  }
 
-  const totalUses = events.filter((e) => e.type === 'use').length
-  const totalLeads = events.filter((e) => e.type === 'lead').length
-  const topSector = summary[0] ? getSector(summary[0].sector).label : '—'
-  const maxUses = Math.max(1, ...summary.map((s) => s.uses))
+  if (!isAuthenticated) {
+    return (
+      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-6 bg-background px-4 text-center">
+        <h1 className="font-display text-3xl font-semibold text-primary">
+          Entre para ver o painel
+        </h1>
+        <p className="max-w-md text-sm text-muted-foreground">
+          O sensor de demanda agora vive no servidor. Entre com a sua conta para
+          ver usos, leads e cliques no WhatsApp.
+        </p>
+        <Button
+          asChild
+          className="rounded-full bg-primary px-6 py-5 font-semibold text-primary-foreground hover:bg-primary/90"
+        >
+          <Link to={LOGIN_PATH}>
+            <LogIn className="mr-2 h-4 w-4" />
+            Entrar com a minha conta
+          </Link>
+        </Button>
+      </div>
+    )
+  }
+
+  const stats = statsQuery.data
+  const totals = stats?.totals
+  const uses = Number(totals?.uses ?? 0)
+  const gateLogins = Number(totals?.gateLogins ?? 0)
+  const ctaClicks = Number(totals?.ctaClicks ?? 0)
+
+  const bySector = stats?.bySector ?? []
+  const maxCount = Math.max(1, ...bySector.map((s) => Number(s.count)))
+  const topSectorId = bySector[0]?.sector
+  const topSector = topSectorId ? getSector(topSectorId).label : '—'
 
   // Garante que os 6 setores apareçam, mesmo sem eventos
   const rows = SECTORS.map((sector) => {
-    const found = summary.find((s) => s.sector === sector.id)
-    return { sector, uses: found?.uses ?? 0, leads: found?.leads ?? 0 }
-  }).sort((a, b) => b.uses - a.uses)
+    const found = bySector.find((s) => s.sector === sector.id)
+    return { sector, count: Number(found?.count ?? 0) }
+  }).sort((a, b) => b.count - a.count)
 
-  const recentEvents = [...events].reverse().slice(0, 50)
+  const leads = stats?.leads ?? []
+  const recentEvents = stats?.recentEvents ?? []
 
   function handleExport() {
-    const blob = new Blob([exportEventsJson()], { type: 'application/json' })
+    const blob = new Blob(
+      [
+        JSON.stringify(
+          { exportedAt: new Date().toISOString(), ...stats },
+          null,
+          2,
+        ),
+      ],
+      { type: 'application/json' },
+    )
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'melhore-meu-prompt-eventos.json'
+    a.download = 'melhore-meu-prompt-stats.json'
     a.click()
     URL.revokeObjectURL(url)
-  }
-
-  function handleClear() {
-    if (window.confirm('Apagar todos os eventos locais? Isso não pode ser desfeito.')) {
-      clearEvents()
-      setVersion((v) => v + 1)
-    }
   }
 
   return (
@@ -72,147 +113,195 @@ export default function Dados() {
           Sensor de demanda
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Dados armazenados apenas neste navegador (localStorage).
-          {lead && (
-            <>
-              {' '}
-              Lead capturado:{' '}
-              <span className="font-semibold text-foreground">
-                {lead.name} ({lead.email})
-              </span>
-              .
-            </>
-          )}
+          Dados ao vivo do servidor (todos os visitantes, não só este
+          navegador).
         </p>
 
-        {/* Cards-resumo */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-warm">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              <MousePointerClick className="h-4 w-4" />
-              Usos da ferramenta
-            </div>
-            <p className="mt-2 font-display text-4xl font-bold text-primary">
-              {Math.max(usageCount, totalUses)}
-            </p>
+        {statsQuery.isLoading ? (
+          <div className="mt-16 flex justify-center">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-warm">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              <Mail className="h-4 w-4" />
-              Leads capturados
-            </div>
-            <p className="mt-2 font-display text-4xl font-bold text-primary">
-              {totalLeads}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-warm">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              <TrendingUp className="h-4 w-4" />
-              Setor mais procurado
-            </div>
-            <p className="mt-2 font-display text-2xl font-bold text-primary">
-              {topSector}
-            </p>
-          </div>
-        </div>
-
-        {/* Demanda por setor */}
-        <div className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-warm">
-          <h2 className="font-display text-xl font-semibold text-primary">
-            Demanda por setor
-          </h2>
-          <div className="mt-5 space-y-3">
-            {rows.map(({ sector, uses, leads }) => (
-              <div key={sector.id} className="flex items-center gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary">
-                  <sector.icon className="h-4 w-4 text-primary" />
-                </span>
-                <span className="w-36 shrink-0 text-sm font-medium text-foreground">
-                  {sector.label}
-                </span>
-                <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full bg-primary transition-all"
-                    style={{ width: `${(uses / maxUses) * 100}%` }}
-                  />
+        ) : statsQuery.isError ? (
+          <p className="mt-8 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+            Não consegui carregar os dados do servidor. Tente recarregar a
+            página.
+          </p>
+        ) : (
+          <>
+            {/* Cards-resumo */}
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <MousePointerClick className="h-4 w-4" />
+                  Usos da ferramenta
                 </div>
-                <span className="w-24 shrink-0 text-right text-xs text-muted-foreground">
-                  {uses} uso{uses === 1 ? '' : 's'} · {leads} lead{leads === 1 ? '' : 's'}
-                </span>
+                <p className="mt-2 font-display text-4xl font-bold text-primary">
+                  {uses}
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
+              <div className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <LogIn className="h-4 w-4" />
+                  Logins no gate
+                </div>
+                <p className="mt-2 font-display text-4xl font-bold text-primary">
+                  {gateLogins}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <Mail className="h-4 w-4" />
+                  Cliques no WhatsApp
+                </div>
+                <p className="mt-2 font-display text-4xl font-bold text-primary">
+                  {ctaClicks}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TrendingUp className="h-4 w-4" />
+                  Setor mais procurado
+                </div>
+                <p className="mt-2 font-display text-2xl font-bold text-primary">
+                  {topSector}
+                </p>
+              </div>
+            </div>
 
-        {/* Eventos recentes */}
-        <div className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-warm">
-          <h2 className="font-display text-xl font-semibold text-primary">
-            Eventos recentes
-          </h2>
-          {recentEvents.length === 0 ? (
-            <p className="mt-4 text-sm text-muted-foreground">
-              Nenhum evento registrado ainda. Use a ferramenta na página inicial
-              para começar a medir a demanda.
-            </p>
-          ) : (
-            <ul className="mt-4 max-h-80 space-y-2 overflow-y-auto pr-1">
-              {recentEvents.map((ev, i) => (
-                <li
-                  key={`${ev.ts}-${i}`}
-                  className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-secondary/40 px-3 py-2 text-sm"
-                >
-                  <span
-                    className={
-                      ev.type === 'lead'
-                        ? 'rounded-full bg-[hsl(var(--coral))]/15 px-2.5 py-0.5 text-xs font-semibold text-[hsl(var(--coral-deep))]'
-                        : 'rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary'
-                    }
-                  >
-                    {ev.type === 'lead' ? 'lead' : 'uso'}
-                  </span>
-                  <span className="font-medium text-foreground">
-                    {getSector(ev.sector).label}
-                  </span>
-                  {ev.type === 'lead' && ev.email && (
-                    <span className="text-xs text-muted-foreground">
-                      {ev.name} · {ev.email}
+            {/* Demanda por setor */}
+            <div className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-warm">
+              <h2 className="font-display text-xl font-semibold text-primary">
+                Demanda por setor
+              </h2>
+              <div className="mt-5 space-y-3">
+                {rows.map(({ sector, count }) => (
+                  <div key={sector.id} className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary">
+                      <sector.icon className="h-4 w-4 text-primary" />
                     </span>
-                  )}
-                  <span className="ml-auto text-xs text-muted-foreground">
-                    {new Date(ev.ts).toLocaleString('pt-BR')}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {events.length > 50 && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Mostrando os 50 mais recentes de {events.length} eventos. Exporte o
-              JSON para ver todos.
-            </p>
-          )}
-        </div>
+                    <span className="w-36 shrink-0 text-sm font-medium text-foreground">
+                      {sector.label}
+                    </span>
+                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-secondary">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all"
+                        style={{ width: `${(count / maxCount) * 100}%` }}
+                      />
+                    </div>
+                    <span className="w-20 shrink-0 text-right text-xs text-muted-foreground">
+                      {count} uso{count === 1 ? '' : 's'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-        {/* Ações */}
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Button
-            type="button"
-            onClick={handleExport}
-            className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Exportar JSON
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClear}
-            className="rounded-full border-red-300 text-red-700 hover:bg-red-50"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Limpar dados
-          </Button>
-        </div>
+            {/* Leads */}
+            <div className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-warm">
+              <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-primary">
+                <Users className="h-5 w-5" />
+                Leads
+              </h2>
+              {leads.length === 0 ? (
+                <p className="mt-4 text-sm text-muted-foreground">
+                  Nenhum lead autenticado ainda.
+                </p>
+              ) : (
+                <div className="mt-4 overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
+                        <th className="pb-2 pr-4 font-semibold">Nome</th>
+                        <th className="pb-2 pr-4 font-semibold">Email</th>
+                        <th className="pb-2 pr-4 font-semibold">
+                          Setor de interesse
+                        </th>
+                        <th className="pb-2 font-semibold">Último acesso</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leads.map((lead) => (
+                        <tr
+                          key={lead.unionId}
+                          className="border-b border-border/60 last:border-0"
+                        >
+                          <td className="py-2.5 pr-4 font-medium text-foreground">
+                            {lead.name ?? '—'}
+                          </td>
+                          <td className="py-2.5 pr-4 text-muted-foreground">
+                            {lead.email ?? '—'}
+                          </td>
+                          <td className="py-2.5 pr-4 text-muted-foreground">
+                            {lead.sectorInterest
+                              ? getSector(lead.sectorInterest).label
+                              : '—'}
+                          </td>
+                          <td className="py-2.5 text-xs text-muted-foreground">
+                            {lead.lastSignInAt
+                              ? new Date(lead.lastSignInAt).toLocaleString(
+                                  'pt-BR',
+                                )
+                              : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Eventos recentes */}
+            <div className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-warm">
+              <h2 className="font-display text-xl font-semibold text-primary">
+                Eventos recentes
+              </h2>
+              {recentEvents.length === 0 ? (
+                <p className="mt-4 text-sm text-muted-foreground">
+                  Nenhum evento registrado ainda. Use a ferramenta na página
+                  inicial para começar a medir a demanda.
+                </p>
+              ) : (
+                <ul className="mt-4 max-h-80 space-y-2 overflow-y-auto pr-1">
+                  {recentEvents.map((ev) => (
+                    <li
+                      key={ev.id}
+                      className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-secondary/40 px-3 py-2 text-sm"
+                    >
+                      <span
+                        className={
+                          ev.type === 'use'
+                            ? 'rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary'
+                            : 'rounded-full bg-[hsl(var(--coral))]/15 px-2.5 py-0.5 text-xs font-semibold text-[hsl(var(--coral-deep))]'
+                        }
+                      >
+                        {EVENT_LABEL[ev.type] ?? ev.type}
+                      </span>
+                      <span className="font-medium text-foreground">
+                        {ev.sector ? getSector(ev.sector).label : '—'}
+                      </span>
+                      <span className="ml-auto text-xs text-muted-foreground">
+                        {new Date(ev.createdAt).toLocaleString('pt-BR')}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Ações */}
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button
+                type="button"
+                onClick={handleExport}
+                className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Exportar JSON
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
