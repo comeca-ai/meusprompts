@@ -5,7 +5,8 @@ import Login from "./pages/Login"
 import NotFound from "./pages/NotFound"
 import Dashboard from '@/pages/app/Dashboard'
 import PromptEditor from '@/pages/app/PromptEditor'
-import { ArtifactsStub, LibraryStub } from '@/pages/app/Stubs'
+import Artifacts from '@/pages/app/Artifacts'
+import { LibraryStub } from '@/pages/app/Stubs'
 
 export default function App() {
   return (
@@ -17,7 +18,7 @@ export default function App() {
       <Route path="/app" element={<Dashboard />} />
       <Route path="/app/prompts/novo" element={<PromptEditor />} />
       <Route path="/app/prompts/:id" element={<PromptEditor />} />
-      <Route path="/app/artefatos" element={<ArtifactsStub />} />
+      <Route path="/app/artefatos" element={<Artifacts />} />
       <Route path="/app/biblioteca" element={<LibraryStub />} />
       <Route path="/app/biblioteca/:setor" element={<LibraryStub />} />
       <Route path="*" element={<NotFound />} />
