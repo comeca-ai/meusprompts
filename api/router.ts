@@ -1,11 +1,14 @@
 import { authRouter } from "./auth-router";
 import { leadsRouter } from "./leads-router";
+import { vaultRouter, libraryRouter } from "./vault-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
   ping: publicQuery.query(() => ({ ok: true, ts: Date.now() })),
   auth: authRouter,
   leads: leadsRouter,
+  vault: vaultRouter,
+  library: libraryRouter,
 
   // TODO: add feature routers here, e.g.
   // todo: createRouter({

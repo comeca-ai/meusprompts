@@ -5,7 +5,9 @@ import {
   varchar,
   text,
   timestamp,
-  // bigint,
+  bigint,
+  boolean,
+  int,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -67,3 +69,65 @@ export const leadProfiles = mysqlTable("lead_profiles", {
 
 export type LeadProfile = typeof leadProfiles.$inferSelect;
 export type InsertLeadProfile = typeof leadProfiles.$inferInsert;
+
+// ===== App: meusprompts (vault + artefatos + biblioteca) =====
+
+export const prompts = mysqlTable("prompts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("userId", { length: 64 }).notNull(), // unionId do dono
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  category: varchar("category", { length: 64 }).notNull().default("Geral"),
+  sector: varchar("sector", { length: 64 }), // nullable — enum dos 6 setores
+  isFavorite: boolean("isFavorite").notNull().default(false),
+  visibility: varchar("visibility", { length: 16 }).notNull().default("private"), // "public" | "private"
+  currentVersion: int("currentVersion").notNull().default(1),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export type Prompt = typeof prompts.$inferSelect;
+export type InsertPrompt = typeof prompts.$inferInsert;
+
+export const promptVersions = mysqlTable("prompt_versions", {
+  id: serial("id").primaryKey(),
+  promptId: bigint("promptId", { mode: "number", unsigned: true }).notNull(),
+  version: int("version").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  changeNote: varchar("changeNote", { length: 500 }),
+  source: varchar("source", { length: 16 }).notNull().default("manual"), // "manual" | "ai"
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type PromptVersion = typeof promptVersions.$inferSelect;
+
+export const artifacts = mysqlTable("artifacts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("userId", { length: 64 }).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: varchar("description", { length: 500 }),
+  type: varchar("type", { length: 16 }).notNull().default("html"), // "html" | "code" | "text"
+  language: varchar("language", { length: 32 }),
+  code: text("code").notNull(),
+  promptId: bigint("promptId", { mode: "number", unsigned: true }), // nullable — prompt de origem
+  isFavorite: boolean("isFavorite").notNull().default(false),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+export type Artifact = typeof artifacts.$inferSelect;
+
+export const libraryItems = mysqlTable("library_items", {
+  id: serial("id").primaryKey(),
+  sector: varchar("sector", { length: 64 }).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  tags: varchar("tags", { length: 500 }), // csv
+  featured: boolean("featured").notNull().default(false),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type LibraryItem = typeof libraryItems.$inferSelect;
