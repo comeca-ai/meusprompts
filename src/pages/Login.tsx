@@ -35,7 +35,7 @@ export default function Login() {
               Entre na sua conta
             </h1>
             <p className="mt-2 text-sm leading-relaxed text-[#5a6a8a]">
-              Acesse seu vault de prompts, artefatos e a biblioteca por setor.
+              Acesse sua biblioteca de prompts, artefatos e os prompts prontos por setor.
               Se é sua primeira vez, a conta é criada automaticamente — sem
               senha, sem cadastro.
             </p>

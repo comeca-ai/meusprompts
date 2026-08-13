@@ -649,8 +649,9 @@ function ArtifactsContent() {
       {/* ===== Toolbar ===== */}
       <div className="sticky top-[60px] z-20 -mx-2 mt-6 bg-[#f5f7fc]/90 px-2 py-3 backdrop-blur">
         <div className="flex flex-wrap items-center gap-3">
-          {/* Tabs de tipo (segmented pills com contagem) */}
-          <div className="flex rounded-full border border-[#e3e9f6] bg-white p-1">
+          {/* Tabs de tipo (segmented pills com contagem) — scroll horizontal no mobile */}
+          <div className="-mx-1 flex max-w-full overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex shrink-0 rounded-full border border-[#e3e9f6] bg-white p-1">
             {(
               [
                 { id: 'all', label: 'Todos', icon: null, count: artifacts.length },
@@ -684,6 +685,7 @@ function ArtifactsContent() {
                 </span>
               </button>
             ))}
+            </div>
           </div>
 
           {/* Busca */}
