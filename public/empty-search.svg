@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <ellipse cx="200" cy="252" rx="140" ry="20" fill="#eaf0ff"/>
+  <!-- cartões vazios -->
+  <rect x="70" y="120" width="110" height="84" rx="12" fill="#ffffff" stroke="#8fb2ff" stroke-width="2.5"/>
+  <rect x="86" y="140" width="60" height="8" rx="4" fill="#eaf0ff"/>
+  <rect x="86" y="158" width="78" height="8" rx="4" fill="#eaf0ff"/>
+  <rect x="86" y="176" width="44" height="8" rx="4" fill="#eaf0ff"/>
+  <rect x="200" y="96" width="110" height="84" rx="12" fill="#ffffff" stroke="#8fb2ff" stroke-width="2.5" opacity="0.75"/>
+  <rect x="216" y="116" width="60" height="8" rx="4" fill="#eaf0ff"/>
+  <rect x="216" y="134" width="78" height="8" rx="4" fill="#eaf0ff"/>
+  <!-- lupa -->
+  <circle cx="238" cy="176" r="46" fill="#ffffff" stroke="#3e7aef" stroke-width="4"/>
+  <circle cx="238" cy="176" r="30" fill="#eaf0ff" opacity="0.6"/>
+  <path d="M272 210 l34 34" stroke="#3e7aef" stroke-width="8" stroke-linecap="round"/>
+  <!-- trilha pontilhada -->
+  <path d="M60 230 q60 26 120 18 M250 246 q50 -2 84 -28" stroke="#8fb2ff" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round"/>
+  <!-- sparkles -->
+  <path d="M104 66 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#8fb2ff"/>
+  <path d="M322 96 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z" fill="#3e7aef" opacity="0.55"/>
+  <circle cx="52" cy="120" r="4" fill="#3e7aef" opacity="0.4"/>
+  <circle cx="348" cy="160" r="4" fill="#8fb2ff" opacity="0.7"/>
+</svg>

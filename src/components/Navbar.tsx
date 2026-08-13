@@ -77,6 +77,12 @@ export default function Navbar() {
             <MessageCircle className="h-4 w-4" />
             WhatsApp
           </a>
+          <Link
+            to="/app"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:bg-[#2f5fd0]"
+          >
+            Abrir o app
+          </Link>
           {authArea}
         </nav>
 
@@ -112,6 +118,13 @@ export default function Navbar() {
             <MessageCircle className="h-4 w-4" />
             Falar no WhatsApp
           </a>
+          <Link
+            to="/app"
+            onClick={() => setOpen(false)}
+            className="mt-2 flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-primary"
+          >
+            Abrir o app
+          </Link>
           <div className="mt-2 px-3 py-2.5">{authArea}</div>
         </nav>
       )}

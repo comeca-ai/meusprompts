@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" fill="none">
+  <ellipse cx="240" cy="300" rx="170" ry="26" fill="#eaf0ff"/>
+  <!-- janela de navegador -->
+  <rect x="110" y="90" width="260" height="180" rx="16" fill="#ffffff" stroke="#3e7aef" stroke-width="2.5"/>
+  <path d="M110 122 h260" stroke="#3e7aef" stroke-width="2.5"/>
+  <circle cx="132" cy="106" r="4.5" fill="#eaf0ff" stroke="#3e7aef" stroke-width="2"/>
+  <circle cx="150" cy="106" r="4.5" fill="#eaf0ff" stroke="#3e7aef" stroke-width="2"/>
+  <circle cx="168" cy="106" r="4.5" fill="#8fb2ff"/>
+  <rect x="196" y="100" width="120" height="12" rx="6" fill="#eaf0ff"/>
+  <!-- sinais de código </> -->
+  <path d="M196 162 l-26 22 26 22" stroke="#3e7aef" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M284 162 l26 22 -26 22" stroke="#3e7aef" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M252 158 l-20 52" stroke="#8fb2ff" stroke-width="5" stroke-linecap="round"/>
+  <!-- linhas de código -->
+  <rect x="150" y="228" width="84" height="9" rx="4.5" fill="#eaf0ff"/>
+  <rect x="246" y="228" width="60" height="9" rx="4.5" fill="#8fb2ff" opacity="0.5"/>
+  <rect x="150" y="246" width="120" height="9" rx="4.5" fill="#eaf0ff"/>
+  <!-- raio / sparkle -->
+  <path d="M356 66 l7 16 16 7 -16 7 -7 16 -7 -16 -16 -7 16 -7 z" fill="#8fb2ff"/>
+  <path d="M120 60 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#3e7aef" opacity="0.55"/>
+  <path d="M398 180 l12 -22 4 18 16 -2 -14 14 8 16 -16 -8 -12 12 2 -18 -14 -8 z" fill="#3e7aef" opacity="0.75"/>
+  <circle cx="84" cy="150" r="5" fill="#8fb2ff" opacity="0.6"/>
+  <circle cx="404" cy="240" r="4" fill="#3e7aef" opacity="0.4"/>
+  <!-- trilha -->
+  <path d="M150 300 q40 18 90 16 M300 312 q40 -4 70 -22" stroke="#8fb2ff" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round"/>
+</svg>
