@@ -39,7 +39,7 @@ export default function Navbar() {
   ) : (
     <Link
       to={LOGIN_PATH}
-      className="rounded-full border border-primary px-4 py-2 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:bg-secondary"
+      className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-[0_8px_20px_-8px_rgb(62_122_239/0.6)] transition-all hover:-translate-y-0.5 hover:bg-[#2f66d6]"
     >
       Entrar
     </Link>
