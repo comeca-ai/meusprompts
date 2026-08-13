@@ -158,7 +158,7 @@ function SectorContent({ meta }: { meta: SectorMeta }) {
 
   const handleSave = (item: LibraryItemData) => {
     if (!isAuthenticated) {
-      toast('Entre para salvar no seu vault', {
+      toast('Entre para salvar na sua biblioteca', {
         action: {
           label: 'Entrar',
           onClick: () => {
@@ -180,8 +180,8 @@ function SectorContent({ meta }: { meta: SectorMeta }) {
       {
         onSuccess: () => {
           setSavingId(null)
-          toast.success('Salvo no seu vault', {
-            action: { label: 'Ver no vault', onClick: () => navigate('/app') },
+          toast.success('Salvo na sua biblioteca', {
+            action: { label: 'Ver na biblioteca', onClick: () => navigate('/app') },
           })
         },
         onError: () => {
@@ -509,7 +509,7 @@ function LibraryPromptCard({
             size="sm"
             variant="ghost"
             onClick={onOpenCopy}
-            title="Abrir cópia no vault"
+            title="Abrir cópia na biblioteca"
             className="bg-[#22a58a]/10 font-semibold text-[#22a58a] hover:bg-[#22a58a]/20"
           >
             <BookmarkCheck className="mr-2 h-4 w-4" />
@@ -527,7 +527,7 @@ function LibraryPromptCard({
             ) : (
               <BookmarkPlus className="mr-2 h-4 w-4" />
             )}
-            {saving ? 'Salvando…' : 'Salvar no meu vault'}
+            {saving ? 'Salvando…' : 'Salvar na minha biblioteca'}
           </Button>
         )}
       </div>

@@ -71,7 +71,7 @@ function LibraryContent() {
             </h3>
             <p className="mt-0.5 text-[13.5px] text-[#55617c]">
               Use o Melhorar com IA com o playbook de qualquer setor — direto no
-              seu vault.
+              sua biblioteca.
             </p>
           </div>
           <Button
@@ -169,7 +169,7 @@ function LibraryHero({ items }: { items: LibraryItemData[] }) {
         >
           Curadoria para pequenas empresas brasileiras: cada prompt segue o
           playbook do setor — papel, contexto, formato e restrições. Copie,
-          salve no seu vault ou melhore os seus com IA.
+          salve na sua biblioteca ou melhore os seus com IA.
         </motion.p>
 
         {/* Busca global da biblioteca */}

@@ -346,7 +346,7 @@ function EditorContent() {
         onSuccess: () => {
           void utils.vault.list.invalidate()
           void utils.vault.stats.invalidate()
-          toastSuccess('Prompt duplicado no vault')
+          toastSuccess('Prompt duplicado na biblioteca')
         },
       },
     )
@@ -533,7 +533,7 @@ function EditorContent() {
         <div className="mx-auto flex max-w-[1100px] flex-wrap items-center gap-2 px-6 py-3">
           <button
             type="button"
-            aria-label="Voltar ao vault"
+            aria-label="Voltar à biblioteca"
             onClick={() => guardNavigate(() => navigate('/app'))}
             className="rounded-lg p-2 text-[#55617c] transition-colors hover:bg-[#eaf0ff]"
           >

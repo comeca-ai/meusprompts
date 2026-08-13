@@ -38,9 +38,9 @@ import { CommandPalette } from './CommandPalette'
 import { ImproveWithAIModal } from './ImproveWithAIModal'
 
 const NAV_ITEMS = [
-  { label: 'Vault', path: '/app', icon: LayoutGrid, end: true },
+  { label: 'Minha Biblioteca', path: '/app', icon: LayoutGrid, end: true },
   { label: 'Artefatos', path: '/app/artefatos', icon: Code2, end: false },
-  { label: 'Biblioteca', path: '/app/biblioteca', icon: BookOpen, end: false },
+  { label: 'Biblioteca Setorial', path: '/app/biblioteca', icon: BookOpen, end: false },
   { label: 'Dados', path: '/dados', icon: LayoutDashboard, end: false },
 ]
 
@@ -261,7 +261,7 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
             Entre para acessar o meusprompts
           </h1>
           <p className="text-sm text-[#55617c]">
-            Seu vault de prompts, artefatos e a biblioteca do seu setor ficam na área
+            Sua biblioteca de prompts, seus artefatos e os prompts prontos do seu setor ficam na área
             logada.
           </p>
           <Button

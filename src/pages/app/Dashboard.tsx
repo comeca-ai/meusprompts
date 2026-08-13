@@ -73,7 +73,7 @@ const fadeUp = {
 
 export default function Dashboard() {
   return (
-    <AppShell title="Vault" subtitle="Seus prompts, com histórico e voz da sua marca">
+    <AppShell title="Minha Biblioteca" subtitle="Seus prompts, com histórico e voz da sua marca">
       <DashboardContent />
     </AppShell>
   )
@@ -372,7 +372,7 @@ function DashboardContent() {
                 icon: Star,
                 label: 'Favoritos',
                 value: stats?.favorites ?? 0,
-                chip: total > 0 ? `${favPct}% do vault` : undefined,
+                chip: total > 0 ? `${favPct}% favoritos` : undefined,
                 iconColor: '#f2a63b',
                 onClick: () => applyVisFilter('favorites'),
                 active: vis === 'favorites',
@@ -565,7 +565,7 @@ function DashboardContent() {
             ) : prompts.length === 0 ? (
               <EmptyState
                 image="/empty-vault.svg"
-                title="Seu vault está esperando o primeiro prompt"
+                title="Sua biblioteca está esperando o primeiro prompt"
                 description="Guarde os prompts que você já usa no ChatGPT, Claude ou Gemini — ou importe prontos da biblioteca do seu setor."
                 primaryAction={{
                   label: 'Criar primeiro prompt',
@@ -649,7 +649,7 @@ function DashboardContent() {
                       sector: dailyItem.sector ?? undefined,
                       visibility: 'private',
                     },
-                    { onSuccess: () => toastSuccess('Salvo no seu vault') },
+                    { onSuccess: () => toastSuccess('Salvo na sua biblioteca') },
                   )
                 }
               />
@@ -724,7 +724,7 @@ function DashboardContent() {
                       sector: dailyItem.sector ?? undefined,
                       visibility: 'private',
                     },
-                    { onSuccess: () => toastSuccess('Salvo no seu vault') },
+                    { onSuccess: () => toastSuccess('Salvo na sua biblioteca') },
                   )
                 }
               />
