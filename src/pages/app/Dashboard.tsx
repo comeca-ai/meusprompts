@@ -308,7 +308,7 @@ function DashboardContent() {
             {...fadeUp}
             className="text-[11px] font-semibold uppercase tracking-wide text-[#3e7aef]"
           >
-            Meu vault
+            Minha biblioteca
           </motion.p>
           <motion.h2
             {...fadeUp}
