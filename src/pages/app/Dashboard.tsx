@@ -854,7 +854,7 @@ function LibraryPromo({
           onClick={onSave}
           className="bg-[#3e7aef] text-white hover:bg-[#2f5fd0]"
         >
-          Salvar no vault
+          Salvar na minha biblioteca
         </Button>
         <Link
           to="/app/biblioteca"
