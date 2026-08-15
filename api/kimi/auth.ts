@@ -64,7 +64,7 @@ export async function authenticateRequest(headers: Headers) {
   const cookies = cookie.parse(headers.get("cookie") || "");
   const token = cookies[Session.cookieName];
   if (!token) {
-    console.warn("[auth] No session cookie found in request.");
+    // Sem cookie é o caso normal de requests públicas — não logar (evita spam no PM2)
     throw Errors.forbidden("Invalid authentication token.");
   }
   const claim = await verifySessionToken(token);

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createRouter, publicQuery, authedQuery } from "./middleware";
+import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
 import { insertLeadEvent, upsertLeadProfile, getLeadStats } from "./queries/leads";
 import { userOwnerKey } from "./queries/users";
 
@@ -27,6 +27,6 @@ export const leadsRouter = createRouter({
       return { ok: true };
     }),
 
-  // Autenticado: painel /dados (dono logado)
-  stats: authedQuery.query(async () => getLeadStats()),
+  // Admin: painel /dados (contém PII de todos os usuários)
+  stats: adminQuery.query(async () => getLeadStats()),
 });

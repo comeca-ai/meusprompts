@@ -7,11 +7,16 @@ function isLocalhost(headers: Headers): boolean {
 
 export function getSessionCookieOptions(headers: Headers): CookieOptions {
   const localhost = isLocalhost(headers);
+  // Override p/ ambientes de teste sem TLS (ex.: COOKIE_SECURE=false no .env)
+  const secure =
+    process.env.COOKIE_SECURE != null
+      ? process.env.COOKIE_SECURE !== "false"
+      : !localhost;
 
   return {
     httpOnly: true,
     path: "/",
     sameSite: "Lax",
-    secure: !localhost,
+    secure,
   };
 }

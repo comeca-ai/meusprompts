@@ -22,9 +22,9 @@ const EVENT_LABEL: Record<string, string> = {
 }
 
 export default function Dados() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth()
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth()
   const statsQuery = trpc.leads.stats.useQuery(undefined, {
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && user?.role === 'admin',
     retry: false,
   })
 
@@ -54,6 +54,22 @@ export default function Dados() {
             <LogIn className="mr-2 h-4 w-4" />
             Entrar com a minha conta
           </Link>
+        </Button>
+      </div>
+    )
+  }
+
+  if (user?.role !== 'admin') {
+    return (
+      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-4 bg-background px-4 text-center">
+        <h1 className="font-display text-3xl font-semibold text-primary">
+          Acesso restrito
+        </h1>
+        <p className="max-w-md text-sm text-muted-foreground">
+          Este painel é exclusivo do administrador do meusprompts.
+        </p>
+        <Button asChild variant="outline" className="rounded-full px-6">
+          <Link to="/">Voltar para o início</Link>
         </Button>
       </div>
     )

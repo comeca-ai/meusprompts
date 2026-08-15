@@ -37,10 +37,10 @@ import { CommandPalette } from './CommandPalette'
 import { ImproveWithAIModal } from './ImproveWithAIModal'
 
 const NAV_ITEMS = [
-  { label: 'Minha Biblioteca', path: '/app', icon: LayoutGrid, end: true },
-  { label: 'Artefatos', path: '/app/artefatos', icon: Code2, end: false },
-  { label: 'Biblioteca Setorial', path: '/app/biblioteca', icon: BookOpen, end: false },
-  { label: 'Dados', path: '/dados', icon: LayoutDashboard, end: false },
+  { label: 'Minha Biblioteca', path: '/app', icon: LayoutGrid, end: true, adminOnly: false },
+  { label: 'Artefatos', path: '/app/artefatos', icon: Code2, end: false, adminOnly: false },
+  { label: 'Biblioteca Setorial', path: '/app/biblioteca', icon: BookOpen, end: false, adminOnly: false },
+  { label: 'Dados', path: '/dados', icon: LayoutDashboard, end: false, adminOnly: true },
 ]
 
 interface ImproveRequest {
@@ -77,9 +77,11 @@ function Wordmark() {
 }
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+  const { user } = useAuth()
+  const items = NAV_ITEMS.filter((item) => !item.adminOnly || user?.role === 'admin')
   return (
     <nav className="flex flex-col gap-1">
-      {NAV_ITEMS.map((item) => (
+      {items.map((item) => (
         <NavLink
           key={item.path}
           to={item.path}

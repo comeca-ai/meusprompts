@@ -30,7 +30,9 @@ if (env.isProduction) {
   serveStaticFiles(app);
 
   const port = parseInt(process.env.PORT || "3000");
-  serve({ fetch: app.fetch, port }, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+  // HOST=127.0.0.1 nos droplets (atrás do nginx); default 0.0.0.0 p/ preview da plataforma
+  const hostname = process.env.HOST || "0.0.0.0";
+  serve({ fetch: app.fetch, port, hostname }, () => {
+    console.log(`Server running on http://${hostname}:${port}/`);
   });
 }
