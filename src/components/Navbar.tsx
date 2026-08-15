@@ -60,7 +60,7 @@ export default function Navbar() {
           <img
             src="/assinatura-grupo-navy.png"
             alt="Uma empresa do grupo comeca.ai"
-            className="h-5 w-auto rounded-sm"
+            className="h-8 w-auto rounded-md"
           />
         </Link>
 
