@@ -23,7 +23,6 @@ import {
   X,
 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
-import { LOGIN_PATH } from '@/const'
 import { AuthLayoutSkeleton } from '@/components/AuthLayoutSkeleton'
 import { Button } from '@/components/ui/button'
 import {
@@ -121,7 +120,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  // Sair → volta para a página inicial do site
+  const { user, logout } = useAuth({ redirectPath: '/' })
 
   const initials = (user?.name ?? user?.email ?? '?')
     .split(/\s+/)
@@ -221,7 +221,7 @@ export interface AppShellProps {
  * sobre canvas claro #f5f7fc (app-design.md §3). Exige login (useAuth).
  */
 export function AppShell({ title, subtitle, children }: AppShellProps) {
-  const { user, isLoading } = useAuth()
+  const { user, isLoading } = useAuth({ redirectOnUnauthenticated: true })
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [improve, setImprove] = useState<(ImproveRequest & { open: boolean }) | null>(
@@ -246,36 +246,9 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  if (isLoading) {
+  // Não autenticado → useAuth redireciona para /login; mostra skeleton no interim
+  if (isLoading || !user) {
     return <AuthLayoutSkeleton />
-  }
-
-  if (!user) {
-    return (
-      <div className="flex min-h-[100dvh] items-center justify-center bg-[#f5f7fc]">
-        <div className="flex w-full max-w-md flex-col items-center gap-6 p-8 text-center">
-          <span className="font-display text-2xl font-bold tracking-tight text-[#0b1020]">
-            c<span className="text-[#3e7aef]">∞</span>meca.ai
-          </span>
-          <h1 className="font-display text-xl font-semibold text-[#0b1020]">
-            Entre para acessar o meusprompts
-          </h1>
-          <p className="text-sm text-[#55617c]">
-            Sua biblioteca de prompts, seus artefatos e os prompts prontos do seu setor ficam na área
-            logada.
-          </p>
-          <Button
-            size="lg"
-            className="w-full bg-[#3e7aef] text-white hover:bg-[#2f5fd0]"
-            onClick={() => {
-              window.location.href = LOGIN_PATH
-            }}
-          >
-            Entrar
-          </Button>
-        </div>
-      </div>
-    )
   }
 
   return (
