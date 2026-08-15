@@ -27,6 +27,15 @@ export default app;
 if (env.isProduction) {
   const { serve } = await import("@hono/node-server");
   const { serveStaticFiles } = await import("./lib/vite");
+  const { runSqlMigrations } = await import("./lib/migrate");
+
+  // Migrações SQL idempotentes (ex.: coluna passwordHash da auth própria)
+  try {
+    await runSqlMigrations();
+  } catch (err) {
+    console.error("[migrate] falha ao aplicar migrações:", err);
+  }
+
   serveStaticFiles(app);
 
   const port = parseInt(process.env.PORT || "3000");
