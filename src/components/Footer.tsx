@@ -14,6 +14,11 @@ export default function Footer() {
                 Melhore Meu Prompt · por Setor
               </span>
             </div>
+            <img
+              src="/assinatura-grupo-comeca.png"
+              alt="Uma empresa do grupo comeca.ai"
+              className="mt-3 h-9 w-auto rounded-lg bg-white px-3 py-1.5"
+            />
             <p className="mt-3 max-w-sm text-sm text-white/70">
               Uma ferramenta gratuita do ecossistema comeca.ai — IA de verdade
               para o empresário paraibano.
