@@ -47,14 +47,21 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 animate-fade-down border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
-        <Link to="/" className="flex items-center gap-2.5">
-          <span className="font-display text-xl font-bold tracking-tight text-primary">
-            c∞meca.ai
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 md:px-6">
+        <Link to="/" className="flex flex-col items-start gap-1">
+          <span className="flex items-center gap-2.5">
+            <span className="font-display text-xl font-bold tracking-tight text-primary">
+              c∞meca.ai
+            </span>
+            <span className="hidden rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold leading-tight text-secondary-foreground sm:block">
+              Melhore Meu Prompt · por Setor
+            </span>
           </span>
-          <span className="hidden rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold leading-tight text-secondary-foreground sm:block">
-            Melhore Meu Prompt · por Setor
-          </span>
+          <img
+            src="/assinatura-grupo-navy.png"
+            alt="Uma empresa do grupo comeca.ai"
+            className="h-5 w-auto rounded-sm"
+          />
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
