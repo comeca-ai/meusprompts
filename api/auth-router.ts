@@ -65,7 +65,9 @@ function setSessionCookie(resHeaders: Headers, reqHeaders: Headers, user: User, 
       maxAge: Session.maxAgeMs / 1000,
     }),
   );
-  return user;
+  // Nunca expor passwordHash nem campos internos ao cliente
+  const { id, name, email, role, avatar, createdAt, lastSignInAt } = user;
+  return { id, name, email, role, avatar, createdAt, lastSignInAt };
 }
 
 const emailSchema = z
@@ -138,7 +140,11 @@ export const authRouter = createRouter({
       return setSessionCookie(ctx.resHeaders, ctx.req.headers, user, token);
     }),
 
-  me: authedQuery.query((opts) => opts.ctx.user),
+  me: authedQuery.query((opts) => {
+    // Nunca expor passwordHash nem campos internos ao cliente
+    const { id, name, email, role, avatar, createdAt, lastSignInAt } = opts.ctx.user;
+    return { id, name, email, role, avatar, createdAt, lastSignInAt };
+  }),
 
   logout: authedQuery.mutation(async ({ ctx }) => {
     const opts = getSessionCookieOptions(ctx.req.headers);
