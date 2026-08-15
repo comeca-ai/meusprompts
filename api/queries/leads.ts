@@ -47,7 +47,10 @@ export async function getLeadStats() {
       sectorInterest: schema.leadProfiles.sectorInterest,
     })
     .from(schema.users)
-    .leftJoin(schema.leadProfiles, sql`${schema.leadProfiles.userId} = ${schema.users.unionId}`)
+    .leftJoin(
+      schema.leadProfiles,
+      sql`${schema.leadProfiles.userId} = COALESCE(${schema.users.unionId}, CONCAT('u', ${schema.users.id}))`,
+    )
     .orderBy(desc(schema.users.lastSignInAt))
     .limit(100);
 

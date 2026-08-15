@@ -12,9 +12,11 @@ import {
 
 export const users = mysqlTable("users", {
   id: serial("id").primaryKey(),
-  unionId: varchar("unionId", { length: 255 }).notNull().unique(),
+  // Legado (Kimi OAuth): nullable — contas novas usam e-mail + senha
+  unionId: varchar("unionId", { length: 255 }).unique(),
   name: varchar("name", { length: 255 }),
-  email: varchar("email", { length: 320 }),
+  email: varchar("email", { length: 255 }).unique(),
+  passwordHash: varchar("passwordHash", { length: 255 }),
   avatar: text("avatar"),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

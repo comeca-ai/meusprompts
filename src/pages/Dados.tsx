@@ -220,9 +220,9 @@ export default function Dados() {
                       </tr>
                     </thead>
                     <tbody>
-                      {leads.map((lead) => (
+                      {leads.map((lead, i) => (
                         <tr
-                          key={lead.unionId}
+                          key={lead.unionId ?? lead.email ?? i}
                           className="border-b border-border/60 last:border-0"
                         >
                           <td className="py-2.5 pr-4 font-medium text-foreground">

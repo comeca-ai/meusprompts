@@ -15,6 +15,7 @@ import {
   toggleFavoritePrompt,
   updateArtifact,
 } from "./queries/vault";
+import { userOwnerKey } from "./queries/users";
 
 const idInput = z.object({ id: z.number().int().positive() });
 
@@ -31,10 +32,10 @@ export const vaultRouter = createRouter({
         })
         .optional()
     )
-    .query(async ({ ctx, input }) => listPrompts(ctx.user.unionId, input)),
+    .query(async ({ ctx, input }) => listPrompts(userOwnerKey(ctx.user), input)),
 
   get: authedQuery.input(idInput).query(async ({ ctx, input }) => {
-    const p = await getPrompt(input.id, ctx.user.unionId);
+    const p = await getPrompt(input.id, userOwnerKey(ctx.user));
     if (!p) throw new Error("Prompt não encontrado");
     return p;
   }),
@@ -49,7 +50,7 @@ export const vaultRouter = createRouter({
         visibility: z.enum(["public", "private"]).optional(),
       })
     )
-    .mutation(async ({ ctx, input }) => createPrompt(ctx.user.unionId, input)),
+    .mutation(async ({ ctx, input }) => createPrompt(userOwnerKey(ctx.user), input)),
 
   save: authedQuery
     .input(
@@ -66,35 +67,35 @@ export const vaultRouter = createRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      const p = await savePromptVersion(id, ctx.user.unionId, data);
+      const p = await savePromptVersion(id, userOwnerKey(ctx.user), data);
       if (!p) throw new Error("Prompt não encontrado");
       return p;
     }),
 
   toggleFavorite: authedQuery.input(idInput).mutation(async ({ ctx, input }) => {
-    const p = await toggleFavoritePrompt(input.id, ctx.user.unionId);
+    const p = await toggleFavoritePrompt(input.id, userOwnerKey(ctx.user));
     if (!p) throw new Error("Prompt não encontrado");
     return p;
   }),
 
   remove: authedQuery.input(idInput).mutation(async ({ ctx, input }) => {
-    const ok = await deletePrompt(input.id, ctx.user.unionId);
+    const ok = await deletePrompt(input.id, userOwnerKey(ctx.user));
     if (!ok) throw new Error("Prompt não encontrado");
     return { ok: true };
   }),
 
   versions: authedQuery.input(z.object({ promptId: z.number().int().positive() })).query(async ({ ctx, input }) => {
-    const v = await listPromptVersions(input.promptId, ctx.user.unionId);
+    const v = await listPromptVersions(input.promptId, userOwnerKey(ctx.user));
     if (!v) throw new Error("Prompt não encontrado");
     return v;
   }),
 
-  stats: authedQuery.query(async ({ ctx }) => promptStats(ctx.user.unionId)),
+  stats: authedQuery.query(async ({ ctx }) => promptStats(userOwnerKey(ctx.user))),
 
   // ===== Artifacts =====
   listArtifacts: authedQuery
     .input(z.object({ q: z.string().max(200).optional() }).optional())
-    .query(async ({ ctx, input }) => listArtifacts(ctx.user.unionId, input?.q)),
+    .query(async ({ ctx, input }) => listArtifacts(userOwnerKey(ctx.user), input?.q)),
 
   createArtifact: authedQuery
     .input(
@@ -107,7 +108,7 @@ export const vaultRouter = createRouter({
         promptId: z.number().int().positive().optional(),
       })
     )
-    .mutation(async ({ ctx, input }) => createArtifact(ctx.user.unionId, input)),
+    .mutation(async ({ ctx, input }) => createArtifact(userOwnerKey(ctx.user), input)),
 
   updateArtifact: authedQuery
     .input(
@@ -124,13 +125,13 @@ export const vaultRouter = createRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      const a = await updateArtifact(id, ctx.user.unionId, data);
+      const a = await updateArtifact(id, userOwnerKey(ctx.user), data);
       if (!a) throw new Error("Artefato não encontrado");
       return a;
     }),
 
   deleteArtifact: authedQuery.input(idInput).mutation(async ({ ctx, input }) => {
-    const ok = await deleteArtifact(input.id, ctx.user.unionId);
+    const ok = await deleteArtifact(input.id, userOwnerKey(ctx.user));
     if (!ok) throw new Error("Artefato não encontrado");
     return { ok: true };
   }),

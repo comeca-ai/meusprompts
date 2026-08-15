@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createRouter, publicQuery, authedQuery } from "./middleware";
 import { insertLeadEvent, upsertLeadProfile, getLeadStats } from "./queries/leads";
+import { userOwnerKey } from "./queries/users";
 
 const eventInput = z.object({
   type: z.enum(["use", "gate_login", "cta_whatsapp"]),
@@ -13,7 +14,7 @@ export const leadsRouter = createRouter({
     await insertLeadEvent({
       type: input.type,
       sector: input.sector ?? null,
-      userId: ctx.user?.unionId ?? null,
+      userId: ctx.user ? userOwnerKey(ctx.user) : null,
     });
     return { ok: true };
   }),
@@ -22,7 +23,7 @@ export const leadsRouter = createRouter({
   saveMySector: authedQuery
     .input(z.object({ sector: z.string().max(64) }))
     .mutation(async ({ ctx, input }) => {
-      await upsertLeadProfile(ctx.user.unionId, input.sector);
+      await upsertLeadProfile(userOwnerKey(ctx.user), input.sector);
       return { ok: true };
     }),
 

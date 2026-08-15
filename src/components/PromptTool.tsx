@@ -65,7 +65,7 @@ export default function PromptTool() {
       incrementUsage()
       trackEvent({ type: 'use', sector: sectorId })
       if (isAuthenticated) {
-        // OAuth já capturou nome+email; registra o setor de interesse.
+        // Usuário logado: registra o setor de interesse.
         saveMySectorServer(sectorId)
       }
       setResult(res)
